@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scam Message Checker</title>
+<meta name="description" content="Paste a suspicious WhatsApp or SMS message and see why it may be a scam.">
+<style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#12202e;--muted:#566474;--line:#d3dbe4;--btn:#12202e;--btntext:#fff;--red:#b3261e;--amber:#9a5b00;--green:#17692f;--tint-red:#fdecea;--tint-amber:#fff3dc;--tint-green:#e6f4ea}
+@media (prefers-color-scheme:dark){:root{--bg:#0e141b;--card:#17202a;--ink:#e9eef3;--muted:#9aa8b6;--line:#2a3643;--btn:#e9eef3;--btntext:#0e141b;--red:#ff8a80;--amber:#ffc166;--green:#6fd58c;--tint-red:#3a1b19;--tint-amber:#392a10;--tint-green:#12301d}}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:32px 18px 56px}
+h1{font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 22px;max-width:46ch}
+textarea{width:100%;min-height:170px;padding:14px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;resize:vertical}
+textarea:focus,button:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 4px}
+button{font:inherit;cursor:pointer;border-radius:10px}
+.go{background:var(--btn);color:var(--btntext);border:0;padding:12px 22px;font-weight:700}
+.ghost{background:none;color:var(--muted);border:1px solid var(--line);padding:8px 12px;font-size:.9rem}
+.note{color:var(--muted);font-size:.88rem;margin:6px 0 0}
+#out{margin-top:24px}
+.verdict{border-left:8px solid var(--c);background:var(--t);border-radius:10px;padding:16px 18px}
+.verdict h2{margin:0;font-size:1.7rem;color:var(--c)}
+.verdict p{margin:6px 0 0}
+.verdict.bad{--c:var(--red);--t:var(--tint-red)}
+.verdict.mid{--c:var(--amber);--t:var(--tint-amber)}
+.verdict.ok{--c:var(--green);--t:var(--tint-green)}
+h3{margin:22px 0 6px;font-size:1.05rem}
+ul{margin:0;padding-left:20px}li{margin:4px 0}
+footer{margin-top:36px;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<main>
+<h1>Is this message a scam?</h1>
+<p class="lead">Paste a WhatsApp or SMS message. You get a verdict, the reasons, and what to do next.</p>
+<label for="msg" class="note">Message text (English, Urdu or Roman Urdu)</label>
+<textarea id="msg" placeholder="Paste the message here"></textarea>
+<div class="row">
+<button class="go" id="check">Check message</button>
+<button class="ghost" data-ex="0">Try a prize message</button>
+<button class="ghost" data-ex="1">Try a wrong-transfer message</button>
+<button class="ghost" data-ex="2">Try a normal message</button>
+</div>
+<p class="note">Your message is checked inside your browser. It is not sent or saved anywhere.</p>
+<section id="out" aria-live="polite"></section>
+<footer>This tool looks for known scam patterns. It can miss new tricks, so treat it as a guide, not a guarantee.</footer>
+</main>
+<script>
+const EXAMPLES=[
+"Congratulations! You have won Rs. 25,000 in the BISP Ehsaas lucky draw. Claim now: http://bisp-claim.xyz/win and send your CNIC and OTP within 2 hours.",
+"Salam, I sent Rs 5000 to your Easypaisa account by mistake. Please send it back urgently, I am in trouble.",
+"Your TCS parcel is out for delivery today. Please keep your phone nearby."
+];
+// Short list of official sites. Check and extend this list before launch.
+const OFFICIAL={jazzcash:["jazzcash.com.pk"],easypaisa:["easypaisa.com.pk"],nadra:["nadra.gov.pk"],fbr:["fbr.gov.pk"],tcs:["tcs.com.pk"],daraz:["daraz.pk"]};
+const SHORT=/^(bit\.ly|tinyurl\.com|t\.co|cutt\.ly|is\.gd|rb\.gy|shorturl\.at|goo\.gl|ow\.ly)$/;
+const BADTLD=/\.(xyz|top|click|icu|live|vip|tk|cc|cfd|sbs|rest)$/;
+const URL_RE=/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+\.(?:xyz|top|click|icu|live|vip|tk|ly|gl|gd|gy|cc)\b[^\s<>"']*|\b(?:tinyurl\.com|shorturl\.at)[^\s<>"']*/gi;
+const RULES=[
+{w:40,re:/(share|send|tell|give|forward|bhej|bata|batao).{0,40}\b(otp|pin|password|cvv|verification code)/i,why:"Asks you to share an OTP, PIN or password. Real banks and wallets never ask for these."},
+{w:35,re:/(by mistake|wrongly|wrong number|galti se|ghalti se).{0,90}(return|send back|refund|wapis|waapis)|(return|send back|wapis|waapis).{0,90}(by mistake|galti se|ghalti se)/i,why:"Claims money was sent to you by mistake and asks for it back. This is a common wallet scam."},
+{w:30,re:/(congratulations|you have won|you won|lucky draw|lottery|prize|winner|inaam|inam|bisp|benazir|ehsaas|income support)/i,why:"Promises a prize or aid payment you did not apply for."},
+{w:25,re:/(cnic|id card|shanakhti card|card number|account number|bank details)/i,why:"Asks for your ID or account details."},
+{w:20,re:/(urgent|urgently|immediately|within \d+ ?(hour|minute|min)|last warning|final notice|jaldi|foran|abhi)/i,why:"Pushes you to act fast so you do not stop and think."},
+{w:25,re:/(account|sim|card|wallet).{0,30}(blocked|suspended|closed|deactivated|band ho|block ho)/i,why:"Threatens to block your account or SIM."},
+{w:30,re:/(registration fee|security (deposit|fee)|processing fee|advance (payment|fee)|joining fee)/i,why:"Asks for a fee up front. Real jobs and prizes do not charge you first."},
+{w:20,re:/(work from home|ghar baithe|part.?time job|online job|data entry|like and earn|earn .{0,20}(daily|per day|rozana))/i,why:"Offers easy online earnings, a common job scam pitch."},
+{w:25,re:/(fia|police|court|customs|arrest|warrant|gerftar|case (has been|will be))/i,why:"Uses fear of police, courts or customs to pressure you."}
+];
+function analyzeLinks(msg){
+ const hits=[],hosts=[];
+ (msg.match(URL_RE)||[]).forEach(raw=>{
+  const u=raw.replace(/[.,;:!?)]+$/,"");let host;
+  try{host=new URL(/^https?:/i.test(u)?u:"http://"+u).hostname.toLowerCase()}catch(e){return}
+  hosts.push(host);
+  if(SHORT.test(host))hits.push([20,"Shortened link ("+host+") hides where it really goes."]);
+  if(/^\d+\.\d+\.\d+\.\d+$/.test(host))hits.push([30,"Link points to a raw IP address, not a real website name."]);
+  if(host.includes("xn--"))hits.push([25,"Link uses disguised look-alike characters."]);
+  if(BADTLD.test(host))hits.push([15,"Link ends in "+host.slice(host.lastIndexOf("."))+", common on throwaway scam sites."]);
+  if(/^https?:\/\/[^\/\s]*@/i.test(u))hits.push([25,"Link hides its real destination behind an @ sign."]);
+  if(host.split(".").length>4)hits.push([10,"Link has an unusually long chain of sub-domains."]);
+  if(/^http:\/\//i.test(u))hits.push([8,"Link is not secure (http, not https)."]);
+ });
+ const low=msg.toLowerCase();
+ for(const b in OFFICIAL){
+  if(low.includes(b)&&hosts.length&&!hosts.some(h=>OFFICIAL[b].some(d=>h===d||h.endsWith("."+d)))){
+   hits.push([30,"Mentions "+b+" but the link does not go to its official website."]);break;
+  }
+ }
+ return hits;
+}
+function analyze(msg){
+ const hits=[];
+ RULES.forEach(r=>{if(r.re.test(msg))hits.push([r.w,r.why])});
+ analyzeLinks(msg).forEach(h=>hits.push(h));
+ const seen=new Set(),reasons=[];let score=0;
+ hits.forEach(h=>{if(!seen.has(h[1])){seen.add(h[1]);reasons.push(h[1]);score+=h[0]}});
+ return{score:Math.min(score,100),reasons};
+}
+function el(tag,text,cls){const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n}
+function list(items){const u=el("ul");items.forEach(t=>u.appendChild(el("li",t)));return u}
+function render(res){
+ const out=document.getElementById("out");out.replaceChildren();
+ const bad=res.score>=60,mid=res.score>=25&&!bad;
+ const v=el("div",null,"verdict "+(bad?"bad":mid?"mid":"ok"));
+ v.appendChild(el("h2",bad?"Likely a scam":mid?"Suspicious":"No obvious red flags"));
+ v.appendChild(el("p",bad?"Do not reply, click or send money.":mid?"Be careful. Check with the real company before doing anything.":"Nothing matched our scam patterns. That does not prove it is safe."));
+ out.appendChild(v);
+ if(res.reasons.length){out.appendChild(el("h3","Why"));out.appendChild(list(res.reasons))}
+ out.appendChild(el("h3","What to do"));
+ out.appendChild(list([
+  "Never share an OTP, PIN or password with anyone, even if they say they are from your bank.",
+  "Do not open links in the message. Open the official app or type the website address yourself.",
+  "Call the company on the number printed on your card or on its official website.",
+  "Block the sender, and report the message through the real service's official channel."
+ ]));
+}
+const box=document.getElementById("msg");
+document.getElementById("check").onclick=()=>{
+ const m=box.value.trim();
+ if(!m){const o=document.getElementById("out");o.replaceChildren(el("p","Paste a message first, then press Check message."));return}
+ render(analyze(m));
+};
+document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{box.value=EXAMPLES[b.dataset.ex];document.getElementById("check").click()});
+</script>
+</body>
+</html>
