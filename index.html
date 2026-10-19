@@ -2,130 +2,190 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scam Message Checker</title>
-<meta name="description" content="Paste a suspicious WhatsApp or SMS message and see why it may be a scam.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PK Scam Message Checker</title>
+<meta name="description" content="Paste a suspicious SMS or WhatsApp message and check it against scam patterns reported in Pakistan.">
 <style>
-:root{--bg:#eef2f6;--card:#fff;--ink:#12202e;--muted:#566474;--line:#d3dbe4;--btn:#12202e;--btntext:#fff;--red:#b3261e;--amber:#9a5b00;--green:#17692f;--tint-red:#fdecea;--tint-amber:#fff3dc;--tint-green:#e6f4ea}
-@media (prefers-color-scheme:dark){:root{--bg:#0e141b;--card:#17202a;--ink:#e9eef3;--muted:#9aa8b6;--line:#2a3643;--btn:#e9eef3;--btntext:#0e141b;--red:#ff8a80;--amber:#ffc166;--green:#6fd58c;--tint-red:#3a1b19;--tint-amber:#392a10;--tint-green:#12301d}}
+:root{--bg:#eef2f6;--card:#fff;--ink:#12202e;--muted:#566474;--line:#d3dbe4;--btn:#12202e;--btntext:#fff;--red:#b3261e;--amber:#9a5b00;--green:#17692f;--tr:#fdecea;--ta:#fff3dc;--tg:#e6f4ea;--link:#0b57d0}
+@media (prefers-color-scheme:dark){:root{--bg:#0e141b;--card:#17202a;--ink:#e9eef3;--muted:#9aa8b6;--line:#2a3643;--btn:#e9eef3;--btntext:#0e141b;--red:#ff8a80;--amber:#ffc166;--green:#6fd58c;--tr:#3a1b19;--ta:#392a10;--tg:#12301d;--link:#8ab4f8}}
 *{box-sizing:border-box}
-html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-main{max-width:640px;margin:0 auto;padding:32px 18px 56px}
-h1{font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
-.lead{color:var(--muted);margin:0 0 22px;max-width:46ch}
-textarea{width:100%;min-height:170px;padding:14px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px;resize:vertical}
-textarea:focus,button:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 4px}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:660px;margin:0 auto;padding:30px 18px 56px}
+h1{font-size:clamp(1.8rem,6vw,2.5rem);line-height:1.1;margin:0 0 10px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 20px;max-width:48ch}
+label{display:block;font-size:.88rem;color:var(--muted);margin:12px 0 4px}
+textarea,input{width:100%;padding:12px 14px;font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:10px}
+textarea{min-height:160px;resize:vertical}
+textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0 4px}
 button{font:inherit;cursor:pointer;border-radius:10px}
 .go{background:var(--btn);color:var(--btntext);border:0;padding:12px 22px;font-weight:700}
-.ghost{background:none;color:var(--muted);border:1px solid var(--line);padding:8px 12px;font-size:.9rem}
-.note{color:var(--muted);font-size:.88rem;margin:6px 0 0}
+.ghost{background:none;color:var(--muted);border:1px solid var(--line);padding:7px 11px;font-size:.88rem}
+.note{color:var(--muted);font-size:.88rem;margin:8px 0 0}
 #out{margin-top:24px}
 .verdict{border-left:8px solid var(--c);background:var(--t);border-radius:10px;padding:16px 18px}
 .verdict h2{margin:0;font-size:1.7rem;color:var(--c)}
 .verdict p{margin:6px 0 0}
-.verdict.bad{--c:var(--red);--t:var(--tint-red)}
-.verdict.mid{--c:var(--amber);--t:var(--tint-amber)}
-.verdict.ok{--c:var(--green);--t:var(--tint-green)}
+.bad{--c:var(--red);--t:var(--tr)}.mid{--c:var(--amber);--t:var(--ta)}.ok{--c:var(--green);--t:var(--tg)}
 h3{margin:22px 0 6px;font-size:1.05rem}
-ul{margin:0;padding-left:20px}li{margin:4px 0}
-footer{margin-top:36px;color:var(--muted);font-size:.85rem}
+ul{margin:0;padding-left:20px}li{margin:5px 0}
+.pat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0}
+.pat b{display:block}.pat span{color:var(--muted);font-size:.93rem}
+a{color:var(--link)}
+footer{margin-top:34px;color:var(--muted);font-size:.85rem}
 </style>
 </head>
 <body>
 <main>
 <h1>Is this message a scam?</h1>
-<p class="lead">Paste a WhatsApp or SMS message. You get a verdict, the reasons, and what to do next.</p>
-<label for="msg" class="note">Message text (English, Urdu or Roman Urdu)</label>
+<p class="lead">Paste a WhatsApp or SMS message. You get a verdict, the scam patterns it matches, and what to do next.</p>
+<label for="msg">Message text (English, Urdu or Roman Urdu)</label>
 <textarea id="msg" placeholder="Paste the message here"></textarea>
+<label for="snd">Who sent it? Shortcode or number (optional, but it makes the check sharper)</label>
+<input id="snd" inputmode="text" autocomplete="off" placeholder="Example: 3737 or 0300 1234567">
 <div class="row">
 <button class="go" id="check">Check message</button>
-<button class="ghost" data-ex="0">Try a prize message</button>
-<button class="ghost" data-ex="1">Try a wrong-transfer message</button>
-<button class="ghost" data-ex="2">Try a normal message</button>
+<button class="ghost" data-ex="0">Wallet OTP call</button>
+<button class="ghost" data-ex="1">Prize with link</button>
+<button class="ghost" data-ex="2">Money sent by mistake</button>
+<button class="ghost" data-ex="3">Normal message</button>
 </div>
-<p class="note">Your message is checked inside your browser. It is not sent or saved anywhere.</p>
+<p class="note">Everything is checked inside your browser. Nothing is sent or saved.</p>
 <section id="out" aria-live="polite"></section>
-<footer>This tool looks for known scam patterns. It can miss new tricks, so treat it as a guide, not a guarantee.</footer>
+<footer>This tool matches known scam patterns from public advisories. New tricks can slip past it, so treat the result as a guide, not a guarantee.</footer>
 </main>
 <script>
-const EXAMPLES=[
-"Congratulations! You have won Rs. 25,000 in the BISP Ehsaas lucky draw. Claim now: http://bisp-claim.xyz/win and send your CNIC and OTP within 2 hours.",
-"Salam, I sent Rs 5000 to your Easypaisa account by mistake. Please send it back urgently, I am in trouble.",
-"Your TCS parcel is out for delivery today. Please keep your phone nearby."
+const PATTERNS={"P001": {"n": "Wallet PIN/OTP theft", "s": "Never share OTP/MPIN/PIN/password; hang up and call support through the official app/site. If shared, immediately contact wallet provider and ask to secure the account."}, "P002": {"n": "Wallet suspended / re-KYC link", "s": "Do not use the embedded link. Open the official app independently and check account status; contact official support."}, "P006": {"n": "Fake prize, bike, phone or lottery win", "s": "Do not pay or share codes. Verify the promotion through the brand's official app/site and terms."}, "P007": {"n": "Cashback / reward redemption phishing", "s": "Open the app directly instead of the link; do not enter payment details just to receive an unsolicited reward."}, "P009": {"n": "BISP / 8171 cash assistance impersonation", "s": "BISP-related messages should be verified with official BISP channels. Radio Pakistan's 2024 report says BISP messages are sent from 8171 only; independently reconfirm current guidance."}, "P011": {"n": "FBR tax refund / banking information request", "s": "Never provide banking details through a message link or phone number embedded in it. Visit FBR's official website independently."}, "P013": {"n": "Courier address correction / parcel delivery phishing", "s": "Check tracking on the courier's official website/app typed manually; never install an app from an SMS link."}, "P015": {"n": "SIM will be blocked / PTA registration threat", "s": "Do not share codes or biometric data. Use the operator's official service centre or PTA's official complaint/verification channels."}, "P016": {"n": "Fake police/FIA/NCCIA/government case threat", "s": "Do not pay the caller. Contact the named agency through its official website/helpline and preserve the messages."}, "P017": {"n": "Fake bank transfer / 'safe account' instruction", "s": "Do not transfer. Disconnect and independently call the bank or relevant agency."}, "P018": {"n": "Fake loan approval / processing-fee offer", "s": "Use only licensed lender channels; verify with bank/regulator before paying any upfront fee."}, "P019": {"n": "Fake job / interview registration fee", "s": "Verify the employer using independently found contact details. Do not pay to secure an interview or job offer."}, "P020": {"n": "Fake online task / review / freelance deposit", "s": "Stop paying; preserve group links and transaction IDs; report the account and file a complaint if money was lost."}, "P023": {"n": "Fake trading app / celebrity-endorsed investment platform", "s": "Do not install unknown APKs or deposit until you verify licensing and official app links via SECP/recognized broker channels."}, "P024": {"n": "Money-doubling / guaranteed high-return scheme", "s": "Assume guaranteed high returns are a warning sign. Verify legal registration and never borrow to invest."}, "P025": {"n": "WhatsApp account takeover / login-code request", "s": "Never share WhatsApp/SMS codes. Enable two-step verification; confirm unusual requests by voice call on a known number."}, "P027": {"n": "Malicious app/APK or attachment disguised as package/job file", "s": "Do not install apps from links sent by strangers. Use official app stores and verify the sender separately."}, "P031": {"n": "False payment receipt / buyer screenshot", "s": "Check the actual available balance and transaction record in your own app. Do not rely on screenshots or forwarded receipts."}, "P032": {"n": "Mistaken transfer / reverse-payment trick", "s": "Do not manually return funds to a new destination. Contact your wallet/bank and use its official reversal/dispute process."}, "P033": {"n": "Fake bill / electricity-gas-water disconnection threat", "s": "Check the bill and account in the utility's official system; never give an OTP to a caller claiming to confirm payment."}, "P034": {"n": "Fake tax/traffic fine or government payment link", "s": "Check the fine on the agency's official portal by navigating there yourself. Never use a link from a forwarded message."}, "P036": {"n": "SIM replacement / fingerprint or biometric harvesting", "s": "Use an authorized franchise/service centre; ask why biometric processing is needed and keep the receipt. Never send biometric images over chat."}, "P038": {"n": "Fake merchant/agent asks to scan QR or approve collect request", "s": "Read the full in-app confirmation carefully; receiving money should not require paying the other party or sharing a secret code."}, "P039": {"n": "Account rental / receive-and-forward commission offer", "s": "Do not rent an account, share SIM/credentials or move money for strangers. Contact your bank if suspicious transactions appear."}};
+const EX=[
+["Hello, this is JazzCash support. Your wallet is at risk. Please tell me the OTP you just received to secure your account.","0312 5550101"],
+["Congratulations! You have won a prize in the lucky draw. Claim within 2 hours at http://claim-prize.xyz and pay a small processing fee.","3123"],
+["Salam, maine galti se 5000 bhej diye hain aap ko. Please wapas kar dein, main bohat pareshan hoon.","0345 5550199"],
+["Your TCS parcel is out for delivery today. Please keep your phone nearby.",""]
 ];
-// Short list of official sites. Check and extend this list before launch.
-const OFFICIAL={jazzcash:["jazzcash.com.pk"],easypaisa:["easypaisa.com.pk"],nadra:["nadra.gov.pk"],fbr:["fbr.gov.pk"],tcs:["tcs.com.pk"],daraz:["daraz.pk"]};
 const SHORT=/^(bit\.ly|tinyurl\.com|t\.co|cutt\.ly|is\.gd|rb\.gy|shorturl\.at|goo\.gl|ow\.ly)$/;
 const BADTLD=/\.(xyz|top|click|icu|live|vip|tk|cc|cfd|sbs|rest)$/;
 const URL_RE=/(?:https?:\/\/|www\.)[^\s<>"']+|\b[a-z0-9-]+\.(?:xyz|top|click|icu|live|vip|tk|ly|gl|gd|gy|cc)\b[^\s<>"']*|\b(?:tinyurl\.com|shorturl\.at)[^\s<>"']*/gi;
-const RULES=[
-{w:40,re:/(share|send|tell|give|forward|bhej|bata|batao).{0,40}\b(otp|pin|password|cvv|verification code)/i,why:"Asks you to share an OTP, PIN or password. Real banks and wallets never ask for these."},
-{w:35,re:/(by mistake|wrongly|wrong number|galti se|ghalti se).{0,90}(return|send back|refund|wapis|waapis)|(return|send back|wapis|waapis).{0,90}(by mistake|galti se|ghalti se)/i,why:"Claims money was sent to you by mistake and asks for it back. This is a common wallet scam."},
-{w:30,re:/(congratulations|you have won|you won|lucky draw|lottery|prize|winner|inaam|inam|bisp|benazir|ehsaas|income support)/i,why:"Promises a prize or aid payment you did not apply for."},
-{w:25,re:/(cnic|id card|shanakhti card|card number|account number|bank details)/i,why:"Asks for your ID or account details."},
-{w:20,re:/(urgent|urgently|immediately|within \d+ ?(hour|minute|min)|last warning|final notice|jaldi|foran|abhi)/i,why:"Pushes you to act fast so you do not stop and think."},
-{w:25,re:/(account|sim|card|wallet).{0,30}(blocked|suspended|closed|deactivated|band ho|block ho)/i,why:"Threatens to block your account or SIM."},
-{w:30,re:/(registration fee|security (deposit|fee)|processing fee|advance (payment|fee)|joining fee)/i,why:"Asks for a fee up front. Real jobs and prizes do not charge you first."},
-{w:20,re:/(work from home|ghar baithe|part.?time job|online job|data entry|like and earn|earn .{0,20}(daily|per day|rozana))/i,why:"Offers easy online earnings, a common job scam pitch."},
-{w:25,re:/(fia|police|court|customs|arrest|warrant|gerftar|case (has been|will be))/i,why:"Uses fear of police, courts or customs to pressure you."}
+// Official shortcodes and sites come from the research files. Re-check them before launch.
+const BRANDS=[
+{n:"JazzCash",re:/jazz ?cash/i,codes:["4444"],doms:["jazzcash.com.pk","jazz.com.pk"]},
+{n:"Easypaisa",re:/easy ?paisa/i,codes:["3737"],doms:["easypaisa.com.pk"]},
+{n:"BISP",re:/bisp|benazir|ehsaas|income support/i,codes:["8171"],doms:["bisp.gov.pk"]},
+{n:"HBL",re:/\bhbl\b/i,codes:["4250"],doms:["hbl.com"]},
+{n:"Meezan Bank",re:/meezan/i,codes:[],doms:["meezanbank.com"]},
+{n:"FBR",re:/\bfbr\b/i,codes:[],doms:["fbr.gov.pk"]},
+{n:"NADRA",re:/nadra/i,codes:[],doms:["nadra.gov.pk"]},
+{n:"PTA",re:/\bpta\b/i,codes:[],doms:["pta.gov.pk"]},
+{n:"Pakistan Post",re:/pakistan post|pak post/i,codes:[],doms:["pakpost.gov.pk"]},
+{n:"Traffic police",re:/e-?challan|traffic (police|fine)/i,codes:["8070","9915"],doms:[".gov.pk"]}
 ];
-function analyzeLinks(msg){
+const RULES=[
+{id:"P001",w:45,floor:65,re:/(share|send|tell|give|read|forward|bhej|bata|batao|dijiye).{0,50}\b(otp|m?pin|password|cvv|verification code|security code)\b|\b(otp|m?pin|password|cvv)\b.{0,40}(share|send|tell|bhej|bata)|(او\s?ٹی\s?پی|پن).{0,40}(بتا|شیئر|بھیج)/i,why:"Asks you to share an OTP, PIN or password. Real banks and wallets never ask for these."},
+{id:"P025",w:45,floor:65,re:/whatsapp.{0,60}(code|otp)|(code|otp).{0,60}whatsapp|tell me the (6|six).?digit code|code you (just )?received/i,why:"Asks for a verification code. This is how WhatsApp accounts are taken over."},
+{id:"P017",w:45,floor:65,re:/(safe|secure|temporary).{0,12}account.{0,60}(transfer|move|send)|(transfer|move|send).{0,60}(safe|secure|temporary) account/i,why:"Tells you to move money to a safe or temporary account. No real bank does this."},
+{id:"P027",w:40,floor:65,re:/\.apk\b|(install|download).{0,30}(this|the|our).{0,10}(app|apk|file)/i,why:"Pushes you to install an app or file sent in a message."},
+{id:"P032",w:35,re:/(by mistake|wrongly|wrong number|galti se|ghalti se).{0,90}(return|send back|refund|wapis|waapis|wapas)|(return|send back|wapis|waapis|wapas).{0,90}(by mistake|galti se|ghalti se)/i,why:"Says money was sent to you by mistake and asks for it back."},
+{id:"P002",w:25,re:/(account|wallet|sim|card|number).{0,40}(block|blocked|suspend|suspended|closed|deactivat|band ho|block ho|not verified)/i,why:"Threatens to block your wallet, account or SIM."},
+{id:"P015",w:30,re:/(sim|number).{0,30}(block|expire|disconnect|band)/i,and:/(verify|cnic|biometric|link|pta)/i,why:"Threatens your SIM and asks you to verify."},
+{id:"P036",w:35,re:/(fingerprint|biometric|thumb)/i,and:/(sim|verify|renew|update)/i,why:"Asks for fingerprint or biometric data for your SIM."},
+{id:"P006",w:30,re:/(congratulations|you (have )?won|winner|lucky draw|lottery|prize|bumper|inaam|inam)/i,why:"Promises a prize you never entered for."},
+{id:"P018",w:30,re:/(registration fee|security (deposit|fee)|processing fee|claim fee|joining fee|advance (payment|fee)|service charge|booking fee)/i,why:"Asks for a fee before you receive anything."},
+{id:"P009",w:25,re:/(bisp|benazir|ehsaas|eidi|income support|relief (amount|package)|subsidy)/i,and:/(claim|register|payment|rs\.? ?\d|link|cnic|blocked|selected|approved)/i,why:"Claims to offer government assistance. Real BISP messages come only from 8171."},
+{id:"P011",w:30,re:/(fbr|tax|income tax).{0,40}refund|refund.{0,40}(fbr|tax)/i,why:"Claims a tax refund and asks for details. FBR does not ask for bank details by SMS."},
+{id:"P013",w:25,re:/(parcel|courier|delivery|pakistan post|customs)/i,and:/(address|fee|pay|link|returned|destroyed|held|failed|update)/i,why:"Courier or customs message asking for a fee or address update."},
+{id:"P016",w:30,re:/(fia|nccia|police|court|warrant|arrest|gerftar|illegal activity|case (has been|is|will be)).{0,80}(contact|pay|verify|immediately|avoid|urgent|face)/i,why:"Uses fear of police, FIA or court action to pressure you."},
+{id:"P033",w:30,re:/(electricity|gas|water|k-?electric|lesco|sngpl|bill).{0,60}(disconnect|cut off|suspend)/i,why:"Threatens to disconnect your utility to push a payment."},
+{id:"P034",w:25,re:/(challan|traffic fine|overdue fine|outstanding fine)/i,and:/(pay|link|easypaisa|jazzcash)/i,why:"Fake fine or challan payment request."},
+{id:"P007",w:25,re:/(reward points|cashback|bonus|points).{0,50}(expire|redeem|claim|today)/i,why:"Reward or cashback that expires today. Banks do not text redemption links."},
+{id:"P019",w:25,re:/(selected|hired|shortlisted).{0,60}(job|position|employee|interview)|daily salary|ghar baithe|work from home/i,why:"Job offer that sounds too easy, with big daily pay."},
+{id:"P020",w:30,re:/(task|review|like|subscribe|rating).{0,60}(earn|daily|salary|deposit|commission)/i,why:"Online task scheme. These ask you to deposit money to unlock earnings."},
+{id:"P024",w:35,re:/(double|triple).{0,20}(money|amount|rupees)|guaranteed (profit|return)|(invest|deposit).{0,40}(daily|weekly|monthly).{0,30}(profit|return)/i,why:"Promises guaranteed or doubled returns."},
+{id:"P023",w:25,re:/(trading|forex|crypto|stock).{0,40}(group|tips|app|signals|platform)/i,and:/(join|profit|guaranteed|vip|insider|exclusive)/i,why:"Investment group or app promising insider profits."},
+{id:"P038",w:25,re:/(scan (this|the) ?qr|approve (the|this)? ?(request|payment)|my approvals|pending approvals)/i,why:"Asks you to approve a payment request or scan a code to receive money."},
+{id:"P039",w:30,re:/(use|rent|lend).{0,30}(your )?(wallet|bank account|account|sim).{0,60}(commission|receive|forward)/i,why:"Offers commission for letting your account or SIM receive money."},
+{id:"P031",w:15,re:/(screenshot|receipt).{0,50}(payment|paid|sent|transfer)|(payment|paid|sent).{0,50}(screenshot|receipt)/i,why:"Payment screenshot instead of money in your balance. Always check your own app."},
+{id:null,w:15,re:/(urgent|urgently|immediately|within \d+ ?(hour|minute|min)|last warning|final notice|act now|today only|jaldi|foran)/i,why:"Pushes you to act fast so you do not stop and think."},
+{id:null,w:10,re:/(call|contact|whatsapp).{0,25}(at|on|us|now)?.{0,10}(\+?92|0092|03)\d[\d\s-]{8,}/i,why:"Tells you to call or message a mobile number given in the message."}
+];
+function hostOk(h,d){return h===d||h.endsWith(d.startsWith(".")?d:"."+d)}
+function links(msg){
  const hits=[],hosts=[];
  (msg.match(URL_RE)||[]).forEach(raw=>{
-  const u=raw.replace(/[.,;:!?)]+$/,"");let host;
-  try{host=new URL(/^https?:/i.test(u)?u:"http://"+u).hostname.toLowerCase()}catch(e){return}
-  hosts.push(host);
-  if(SHORT.test(host))hits.push([20,"Shortened link ("+host+") hides where it really goes."]);
-  if(/^\d+\.\d+\.\d+\.\d+$/.test(host))hits.push([30,"Link points to a raw IP address, not a real website name."]);
-  if(host.includes("xn--"))hits.push([25,"Link uses disguised look-alike characters."]);
-  if(BADTLD.test(host))hits.push([15,"Link ends in "+host.slice(host.lastIndexOf("."))+", common on throwaway scam sites."]);
+  const u=raw.replace(/[.,;:!?)]+$/,"");let h;
+  try{h=new URL(/^https?:/i.test(u)?u:"http://"+u).hostname.toLowerCase()}catch(e){return}
+  hosts.push(h);
+  if(SHORT.test(h))hits.push([20,"Shortened link ("+h+") hides where it really goes."]);
+  if(/^\d+\.\d+\.\d+\.\d+$/.test(h))hits.push([30,"Link points to a raw IP address, not a real website name."]);
+  if(h.includes("xn--"))hits.push([25,"Link uses disguised look-alike characters."]);
+  if(BADTLD.test(h))hits.push([15,"Link ends in "+h.slice(h.lastIndexOf("."))+", common on throwaway scam sites."]);
   if(/^https?:\/\/[^\/\s]*@/i.test(u))hits.push([25,"Link hides its real destination behind an @ sign."]);
-  if(host.split(".").length>4)hits.push([10,"Link has an unusually long chain of sub-domains."]);
+  if(h.split(".").length>4)hits.push([10,"Link has an unusually long chain of sub-domains."]);
   if(/^http:\/\//i.test(u))hits.push([8,"Link is not secure (http, not https)."]);
  });
- const low=msg.toLowerCase();
- for(const b in OFFICIAL){
-  if(low.includes(b)&&hosts.length&&!hosts.some(h=>OFFICIAL[b].some(d=>h===d||h.endsWith("."+d)))){
-   hits.push([30,"Mentions "+b+" but the link does not go to its official website."]);break;
-  }
- }
- return hits;
+ return{hits,hosts};
 }
-function analyze(msg){
- const hits=[];
- RULES.forEach(r=>{if(r.re.test(msg))hits.push([r.w,r.why])});
- analyzeLinks(msg).forEach(h=>hits.push(h));
+function analyze(msg,sender){
+ const hits=[],info=[],ids=[];let floor=0;
+ RULES.forEach(r=>{if(r.re.test(msg)&&(!r.and||r.and.test(msg))){hits.push([r.w,r.why]);if(r.id)ids.push([r.w,r.id]);floor=Math.max(floor,r.floor||0)}});
+ const L=links(msg);L.hits.forEach(h=>hits.push(h));
+ const claimed=BRANDS.filter(b=>b.re.test(msg));
+ claimed.forEach(b=>{
+  if(L.hosts.length&&!L.hosts.some(h=>b.doms.some(d=>hostOk(h,d))))hits.push([30,"Mentions "+b.n+" but the link does not go to its official website."]);
+ });
+ const s=sender.replace(/[\s()-]/g,"");
+ if(s){
+  const personal=/^(\+?92|0092|0)?3\d{9}$/.test(s);
+  const base=hits.reduce((a,h)=>a+h[0],0);
+  claimed.forEach(b=>{
+   if(b.codes.includes(s))info.push("The sender matches the official "+b.n+" shortcode ("+s+"). Shortcodes can be spoofed, so still verify anything unexpected in the official app.");
+   else if(personal&&base>=15)hits.push([30,b.n+" does not text from personal mobile numbers"+(b.codes.length?" (its shortcode is "+b.codes.join(" or ")+")":"")+"."]);
+   else if(b.codes.length&&/^\d{3,5}$/.test(s))info.push(b.n+" messages come from "+b.codes.join(" or ")+", not "+s+".");
+  });
+ }
  const seen=new Set(),reasons=[];let score=0;
  hits.forEach(h=>{if(!seen.has(h[1])){seen.add(h[1]);reasons.push(h[1]);score+=h[0]}});
- return{score:Math.min(score,100),reasons};
+ score=Math.min(Math.max(score,floor),100);
+ const pids=[...new Set(ids.sort((a,b)=>b[0]-a[0]).map(x=>x[1]))].slice(0,3);
+ return{score,reasons,info,pids};
 }
-function el(tag,text,cls){const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n}
-function list(items){const u=el("ul");items.forEach(t=>u.appendChild(el("li",t)));return u}
-function render(res){
- const out=document.getElementById("out");out.replaceChildren();
- const bad=res.score>=60,mid=res.score>=25&&!bad;
+function el(t,x,c){const n=document.createElement(t);if(x)n.textContent=x;if(c)n.className=c;return n}
+function ul(a){const u=el("ul");a.forEach(t=>u.appendChild(el("li",t)));return u}
+function link(href,txt){const a=el("a",txt);a.href=href;a.target="_blank";a.rel="noopener noreferrer";return a}
+function render(r){
+ const o=document.getElementById("out");o.replaceChildren();
+ const bad=r.score>=60,mid=!bad&&r.score>=25;
  const v=el("div",null,"verdict "+(bad?"bad":mid?"mid":"ok"));
  v.appendChild(el("h2",bad?"Likely a scam":mid?"Suspicious":"No obvious red flags"));
  v.appendChild(el("p",bad?"Do not reply, click or send money.":mid?"Be careful. Check with the real company before doing anything.":"Nothing matched our scam patterns. That does not prove it is safe."));
- out.appendChild(v);
- if(res.reasons.length){out.appendChild(el("h3","Why"));out.appendChild(list(res.reasons))}
- out.appendChild(el("h3","What to do"));
- out.appendChild(list([
-  "Never share an OTP, PIN or password with anyone, even if they say they are from your bank.",
-  "Do not open links in the message. Open the official app or type the website address yourself.",
-  "Call the company on the number printed on your card or on its official website.",
-  "Block the sender, and report the message through the real service's official channel."
+ o.appendChild(v);
+ if(r.pids.length){
+  o.appendChild(el("h3","Known patterns this matches"));
+  r.pids.forEach(id=>{const p=PATTERNS[id];if(!p)return;const d=el("div",null,"pat");d.appendChild(el("b",p.n));d.appendChild(el("span",p.s));o.appendChild(d)});
+ }
+ if(r.reasons.length){o.appendChild(el("h3","Warning signs found"));o.appendChild(ul(r.reasons))}
+ if(r.info.length){o.appendChild(el("h3","About the sender"));o.appendChild(ul(r.info))}
+ o.appendChild(el("h3","What to do"));
+ o.appendChild(ul([
+  "Never share an OTP, PIN or password, even with someone who says they are from your bank or wallet.",
+  "Do not click links or call numbers in the message. Open the official app or type the website yourself.",
+  "Call the number printed on your card or on the official website.",
+  "Keep screenshots and the sender details as evidence."
  ]));
+ if(bad||mid){
+  o.appendChild(el("h3","Report it"));
+  const u=el("ul");
+  [["Cybercrime: NCCIA complaint portal (helpline 1799)","https://complaint.nccia.gov.pk/"],["Telecom spam: PTA complaint system","https://complaint.pta.gov.pk/userlogin.aspx"],["Bank dispute: State Bank Sunwai portal","https://sunwai.sbp.org.pk/"]].forEach(x=>{const li=el("li");li.appendChild(link(x[1],x[0]));u.appendChild(li)});
+  u.appendChild(el("li","JazzCash: call 4444 from a Jazz number. For Easypaisa, use the help section inside its official app."));
+  o.appendChild(u);
+  o.appendChild(el("p","Check each page for its current instructions.","note"));
+ }
 }
-const box=document.getElementById("msg");
+const box=document.getElementById("msg"),snd=document.getElementById("snd");
 document.getElementById("check").onclick=()=>{
  const m=box.value.trim();
- if(!m){const o=document.getElementById("out");o.replaceChildren(el("p","Paste a message first, then press Check message."));return}
- render(analyze(m));
+ if(!m){document.getElementById("out").replaceChildren(el("p","Paste a message first, then press Check message."));return}
+ render(analyze(m,snd.value.trim()));
 };
-document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{box.value=EXAMPLES[b.dataset.ex];document.getElementById("check").click()});
+document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{const e=EX[b.dataset.ex];box.value=e[0];snd.value=e[1];document.getElementById("check").click()});
 </script>
 </body>
 </html>
