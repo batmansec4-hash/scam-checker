@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>PK Scam Message Checker</title>
+<title>Scam Check PK | Free scam message checker for Pakistan</title>
 <meta name="description" content="Paste a suspicious SMS or WhatsApp message and check it against scam patterns reported in Pakistan.">
 <style>
 :root{--bg:#eef2f6;--card:#fff;--ink:#12202e;--muted:#566474;--line:#d3dbe4;--btn:#12202e;--btntext:#fff;--red:#b3261e;--amber:#9a5b00;--green:#17692f;--tr:#fdecea;--ta:#fff3dc;--tg:#e6f4ea;--link:#0b57d0}
@@ -33,10 +33,12 @@ ul{margin:0;padding-left:20px}li{margin:5px 0}
 .pat b{display:block}.pat span{color:var(--muted);font-size:.93rem}
 a{color:var(--link)}
 footer{margin-top:34px;color:var(--muted);font-size:.85rem}
+.nav{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 22px;font-size:.92rem}.share{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:10px;background:var(--btn);color:var(--btntext);font-weight:700;text-decoration:none}
 </style>
 </head>
 <body>
 <main>
+<nav class="nav"><a href="index.html">Check a message</a><a href="guides.html">Scam guides</a><a href="about.html">About</a><a href="privacy.html">Privacy</a></nav>
 <h1>Is this message a scam?</h1>
 <p class="lead">Paste a WhatsApp or SMS message. You get a verdict, the scam patterns it matches, and what to do next.</p>
 <label for="msg">Message text (English, Urdu or Roman Urdu)</label>
@@ -188,6 +190,7 @@ function render(r){
   u.appendChild(el("li","JazzCash: call 4444 from a Jazz number. For Easypaisa, use the help section inside its official app."));
   o.appendChild(u);
   o.appendChild(el("p","Check each page for its current instructions.","note"));
+  const w=link("https://wa.me/?text="+encodeURIComponent("Be careful: a message I checked looks like a scam. You can check suspicious messages for free here: "+location.href.split("#")[0]),"Warn your family on WhatsApp");w.className="share";o.appendChild(w);
  }
 }
 const box=document.getElementById("msg"),snd=document.getElementById("snd");
@@ -198,5 +201,6 @@ document.getElementById("check").onclick=()=>{
 };
 document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{const e=EX[b.dataset.ex];box.value=e[0];snd.value=e[1];document.getElementById("check").click()});
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
