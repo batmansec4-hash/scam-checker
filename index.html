@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Scam Check PK | Free scam message checker for Pakistan</title>
+<title>Scam Check PK | Free scam message checker for Pakistan</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E"><meta property="og:title" content="Scam Check PK: is this message a scam?"><meta property="og:description" content="Paste a suspicious SMS or WhatsApp message and see the warning signs. Free, private, made for Pakistan."><meta property="og:type" content="website">
 <meta name="description" content="Paste a suspicious SMS or WhatsApp message and check it against scam patterns reported in Pakistan.">
 <style>
 :root{--bg:#eef2f6;--card:#fff;--ink:#12202e;--muted:#566474;--line:#d3dbe4;--btn:#12202e;--btntext:#fff;--red:#b3261e;--amber:#9a5b00;--green:#17692f;--tr:#fdecea;--ta:#fff3dc;--tg:#e6f4ea;--link:#0b57d0}
@@ -33,12 +33,12 @@ ul{margin:0;padding-left:20px}li{margin:5px 0}
 .pat b{display:block}.pat span{color:var(--muted);font-size:.93rem}
 a{color:var(--link)}
 footer{margin-top:34px;color:var(--muted);font-size:.85rem}
-.nav{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 22px;font-size:.92rem}.share{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:10px;background:var(--btn);color:var(--btntext);font-weight:700;text-decoration:none}
+.nav{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 22px;font-size:.92rem}.help{font-weight:700}.share{display:inline-block;margin-top:14px;padding:10px 16px;border-radius:10px;background:var(--btn);color:var(--btntext);font-weight:700;text-decoration:none}.share.alt{background:none;color:var(--link);border:2px solid var(--line);margin-left:8px}.fb{display:block;margin-top:16px}
 </style>
 </head>
 <body>
 <main>
-<nav class="nav"><a href="index.html">Check a message</a><a href="guides.html">Scam guides</a><a href="about.html">About</a><a href="privacy.html">Privacy</a></nav>
+<nav class="nav"><a href="index.html">Check a message</a><a href="guides.html">Scam guides</a><a href="about.html">About</a><a href="help.html" class="help">Need help now</a><a href="privacy.html">Privacy</a></nav>
 <h1>Is this message a scam?</h1>
 <p class="lead">Paste a WhatsApp or SMS message. You get a verdict, the scam patterns it matches, and what to do next.</p>
 <label for="msg">Message text (English, Urdu or Roman Urdu)</label>
@@ -57,6 +57,7 @@ footer{margin-top:34px;color:var(--muted);font-size:.85rem}
 <footer>This tool matches known scam patterns from public advisories. New tricks can slip past it, so treat the result as a guide, not a guarantee.</footer>
 </main>
 <script>
+const FB_EMAIL="Spamchecker.pk@proton.me";
 const PATTERNS={"P001": {"n": "Wallet PIN/OTP theft", "s": "Never share OTP/MPIN/PIN/password; hang up and call support through the official app/site. If shared, immediately contact wallet provider and ask to secure the account."}, "P002": {"n": "Wallet suspended / re-KYC link", "s": "Do not use the embedded link. Open the official app independently and check account status; contact official support."}, "P006": {"n": "Fake prize, bike, phone or lottery win", "s": "Do not pay or share codes. Verify the promotion through the brand's official app/site and terms."}, "P007": {"n": "Cashback / reward redemption phishing", "s": "Open the app directly instead of the link; do not enter payment details just to receive an unsolicited reward."}, "P008": {"n": "Fake mobile package / free recharge / SIM upgrade", "s": "Check package in operator's official app or verified channel; review active VAS/subscriptions."}, "P009": {"n": "BISP / 8171 cash assistance impersonation", "s": "BISP-related messages should be verified with official BISP channels. Radio Pakistan's 2024 report says BISP messages are sent from 8171 only; independently reconfirm current guidance."}, "P011": {"n": "FBR tax refund / banking information request", "s": "Never provide banking details through a message link or phone number embedded in it. Visit FBR's official website independently."}, "P013": {"n": "Courier address correction / parcel delivery phishing", "s": "Check tracking on the courier's official website/app typed manually; never install an app from an SMS link."}, "P015": {"n": "SIM will be blocked / PTA registration threat", "s": "Do not share codes or biometric data. Use the operator's official service centre or PTA's official complaint/verification channels."}, "P016": {"n": "Fake police/FIA/NCCIA/government case threat", "s": "Do not pay the caller. Contact the named agency through its official website/helpline and preserve the messages."}, "P017": {"n": "Fake bank transfer / 'safe account' instruction", "s": "Do not transfer. Disconnect and independently call the bank or relevant agency."}, "P018": {"n": "Fake loan approval / processing-fee offer", "s": "Use only licensed lender channels; verify with bank/regulator before paying any upfront fee."}, "P019": {"n": "Fake job / interview registration fee", "s": "Verify the employer using independently found contact details. Do not pay to secure an interview or job offer."}, "P020": {"n": "Fake online task / review / freelance deposit", "s": "Stop paying; preserve group links and transaction IDs; report the account and file a complaint if money was lost."}, "P023": {"n": "Fake trading app / celebrity-endorsed investment platform", "s": "Do not install unknown APKs or deposit until you verify licensing and official app links via SECP/recognized broker channels."}, "P024": {"n": "Money-doubling / guaranteed high-return scheme", "s": "Assume guaranteed high returns are a warning sign. Verify legal registration and never borrow to invest."}, "P025": {"n": "WhatsApp account takeover / login-code request", "s": "Never share WhatsApp/SMS codes. Enable two-step verification; confirm unusual requests by voice call on a known number."}, "P027": {"n": "Malicious app/APK or attachment disguised as package/job file", "s": "Do not install apps from links sent by strangers. Use official app stores and verify the sender separately."}, "P031": {"n": "False payment receipt / buyer screenshot", "s": "Check the actual available balance and transaction record in your own app. Do not rely on screenshots or forwarded receipts."}, "P032": {"n": "Mistaken transfer / reverse-payment trick", "s": "Do not manually return funds to a new destination. Contact your wallet/bank and use its official reversal/dispute process."}, "P033": {"n": "Fake bill / electricity-gas-water disconnection threat", "s": "Check the bill and account in the utility's official system; never give an OTP to a caller claiming to confirm payment."}, "P034": {"n": "Fake tax/traffic fine or government payment link", "s": "Check the fine on the agency's official portal by navigating there yourself. Never use a link from a forwarded message."}, "P036": {"n": "SIM replacement / fingerprint or biometric harvesting", "s": "Use an authorized franchise/service centre; ask why biometric processing is needed and keep the receipt. Never send biometric images over chat."}, "P038": {"n": "Fake merchant/agent asks to scan QR or approve collect request", "s": "Read the full in-app confirmation carefully; receiving money should not require paying the other party or sharing a secret code."}, "P039": {"n": "Account rental / receive-and-forward commission offer", "s": "Do not rent an account, share SIM/credentials or move money for strangers. Contact your bank if suspicious transactions appear."}};
 const EX=[
 ["Hello, this is JazzCash support. Your wallet is at risk. Please tell me the OTP you just received to secure your account.","0312 5550101"],
@@ -191,13 +192,18 @@ function render(r){
   o.appendChild(u);
   o.appendChild(el("p","Check each page for its current instructions.","note"));
   const w=link("https://wa.me/?text="+encodeURIComponent("Be careful: a message I checked looks like a scam. You can check suspicious messages for free here: "+location.href.split("#")[0]),"Warn your family on WhatsApp");w.className="share";o.appendChild(w);
+  const hp=link("help.html","Already shared a code or paid? Get help");hp.target="_self";hp.className="share alt";o.appendChild(hp);
  }
 }
 const box=document.getElementById("msg"),snd=document.getElementById("snd");
+function addFeedback(){
+ if(!FB_EMAIL.includes("@"))return;
+ const f=link("mailto:"+FB_EMAIL+"?subject="+encodeURIComponent("Scam checker feedback")+"&body="+encodeURIComponent("Message I checked (please remove names and numbers):\n\n"+box.value),"Think this result is wrong? Email us the message");f.target="_self";f.className="fb";document.getElementById("out").appendChild(f);
+}
 document.getElementById("check").onclick=()=>{
  const m=box.value.trim();
  if(!m){document.getElementById("out").replaceChildren(el("p","Paste a message first, then press Check message."));return}
- render(analyze(m,snd.value.trim()));
+ render(analyze(m,snd.value.trim()));addFeedback();
 };
 document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{const e=EX[b.dataset.ex];box.value=e[0];snd.value=e[1];document.getElementById("check").click()});
 </script>
