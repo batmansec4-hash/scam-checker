@@ -1,0 +1,7 @@
+   node_modules
+   .git
+   .dev.vars
+   .wrangler
+   worker.js
+   wrangler.jsonc
+   schema.sql
