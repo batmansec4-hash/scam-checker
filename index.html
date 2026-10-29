@@ -54,6 +54,7 @@ footer{margin-top:34px;color:var(--muted);font-size:.85rem}
 </div>
 <p class="note">Everything is checked inside your browser. Nothing is sent or saved.</p>
 <section id="out" aria-live="polite"></section>
+<section class="alerts"><h3>Run a shop or a team?</h3><p>Get one plain-language Pakistan scam alert a week, free for 14 days.</p><a class="share" href="alerts.html">Get weekly alerts</a></section>
 <footer>This tool matches known scam patterns from public advisories. New tricks can slip past it, so treat the result as a guide, not a guarantee.</footer>
 </main>
 <script>
@@ -207,6 +208,5 @@ document.getElementById("check").onclick=()=>{
 };
 document.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{const e=EX[b.dataset.ex];box.value=e[0];snd.value=e[1];document.getElementById("check").click()});
 </script>
-<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
