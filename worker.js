@@ -169,7 +169,11 @@ async function admin(path, request, env, body) {
 
 async function route(request, env) {
   const path = new URL(request.url).pathname;
-  if (path === '/api/health') return json({ ok: true });
+  if (path === '/api/health') {
+    // Setup check: shows only whether each item is present, never the values.
+    const st = (v, min) => (!v ? 'missing' : v.length < min ? 'too_short' : 'ok');
+    return json({ ok: true, database: env.DB ? 'ok' : 'missing', hash_salt: st(env.HASH_SALT, 32), admin_passphrase: st(env.ADMIN_PASSPHRASE, 16) });
+  }
   if (request.method !== 'POST') return fail(405, 'method', 'Use POST.');
   if (!env.DB || !env.HASH_SALT || env.HASH_SALT.length < 32) return fail(503, 'unconfigured', 'Service is not set up yet.');
   const body = await readJson(request);
